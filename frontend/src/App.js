@@ -1,19 +1,31 @@
 import React from "react";
-// import logo from "./logo.svg";
-// import "./App.css";
-import MyMapComponent from "./components/MyMapComponent";
+import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
+import "./App.css";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+
+import SignUp from "./components/signup.component.js";
+import Login from "./components/login.component.js";
+import About from "./components/about.component.js";
+import Nav from "./components/nav.component.js";
 
 function App() {
   return (
-    <div style={{ width: "100vw", height: "100vh" }}>
-      <MyMapComponent
-        isMarkerShown
-        googleMapURL={`https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places&key=${process.env.REACT_APP_GOOGLE_KEY}`}
-        loadingElement={<div style={{ height: `100%` }} />}
-        containerElement={<div style={{ height: `400px` }} />}
-        mapElement={<div style={{ height: `100%` }} />}
-      />
-    </div>
+    <Router>
+      <div className="App">
+        <Nav />
+
+        <div className="auth-wrapper">
+          <div className="auth-inner">
+            <Switch>
+              <Route exact path="/" component={Login} />
+              <Route path="/about" component={About} />
+              <Route path="/login" component={Login} />
+              <Route path="/signup" component={SignUp} />
+            </Switch>
+          </div>
+        </div>
+      </div>
+    </Router>
   );
 }
 
