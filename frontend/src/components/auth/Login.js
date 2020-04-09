@@ -1,28 +1,41 @@
 import React, { useContext, useState } from "react";
 import { AuthContext } from "./Auth";
 import { Redirect } from "react-router-dom";
+import axios from "axios";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [redirectToHome, setRedirectToHome] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   const { login } = useContext(AuthContext);
+  // const [redirectToHome, setRedirectToHome] = useState(false);
 
-  function handleChange(event) {
-    // console.log(email, password);
-    event.target.type === "email"
-      ? setEmail(event.target.value)
-      : setPassword(event.target.value);
-  }
+  const validateForm = () => email.length > 0 && password.length > 0;
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
-    login(email, password);
+    setLoading(true);
+
+    axios
+      .post("http://localhost:3001/api/login", {
+        username: "admin",
+        password: password
+      })
+      .then(response => {
+        console.log(response.data.token);
+        setLoading(false);
+        login(email);
+      })
+      .catch(e => {
+        setLoading(false);
+        console.log("Usuari i pass incorrectes");
+      });
+
     // setRedirectToHome(true);
-    // console.log(email, password);
   }
 
-  if (redirectToHome) return <Redirect to={"/"} />;
+  // if (redirectToHome) return <Redirect to={"/"} />;
 
   return (
     <form onSubmit={handleSubmit}>
@@ -31,10 +44,12 @@ const Login = () => {
       <div className="form-group">
         <label>Email address</label>
         <input
+          autoFocus
           type="email"
           className="form-control"
           placeholder="Enter email"
-          onChange={handleChange}
+          onChange={e => setEmail(e.target.value)}
+          value={email}
         />
       </div>
 
@@ -44,11 +59,16 @@ const Login = () => {
           type="password"
           className="form-control"
           placeholder="Enter password"
-          onChange={handleChange}
+          onChange={e => setPassword(e.target.value)}
+          value={password}
         />
       </div>
 
-      <button type="submit" className="btn btn-primary btn-block">
+      <button
+        type="submit"
+        disabled={!validateForm() || loading}
+        className="btn btn-primary btn-block"
+      >
         Submit
       </button>
     </form>

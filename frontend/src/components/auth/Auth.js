@@ -5,25 +5,16 @@ export const AuthContext = React.createContext();
 const Auth = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
-  const [loadingUser, setLoadingUser] = useState(true);
 
   useEffect(() => {
     setIsAuthenticated(false);
   }, []);
 
-  async function login(email, password) {
-    const userData = {
-      user: "Nil Quera",
-      email: "nlquera97@gmail.com"
-    };
+  async function login(email) {
+    setUser(email);
+    setIsAuthenticated(true);
 
-    if (email === "nlquera97@gmail.com") {
-      setUser(userData);
-      setIsAuthenticated(true);
-    }
-
-    console.log(user);
-    console.log(isAuthenticated);
+    console.log("Auth:", user);
   }
 
   async function signup(email, password) {
@@ -45,12 +36,11 @@ const Auth = ({ children }) => {
     return {
       user,
       isAuthenticated,
-      loadingUser,
       login,
       signup,
       logout
     };
-  }, [user, loadingUser, isAuthenticated]);
+  }, [user, isAuthenticated]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
