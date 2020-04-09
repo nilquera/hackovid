@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 
-export const AuthContext = React.createContext({});
+export const AuthContext = React.createContext();
 
-function Auth({ children }) {
+const Auth = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
@@ -14,6 +14,6 @@ function Auth({ children }) {
       {children}
     </AuthContext.Provider>
   );
-}
+};
 
 export default Auth;

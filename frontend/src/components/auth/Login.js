@@ -2,6 +2,7 @@ import React, { Component } from "react";
 
 class Login extends Component {
   render() {
+    console.log("hya");
     return (
       <form>
         <h3>Sign In</h3>
@@ -40,9 +41,6 @@ class Login extends Component {
         <button type="submit" className="btn btn-primary btn-block">
           Submit
         </button>
-        <p className="forgot-password text-right">
-          Forgot <a href="#">password?</a>
-        </p>
       </form>
     );
   }

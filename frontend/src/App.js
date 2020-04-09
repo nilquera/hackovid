@@ -1,13 +1,7 @@
-import React, { useContext } from "react";
+import React from "react";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link,
-  Redirect
-} from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 import SignUp from "./components/auth/Signup";
 import Login from "./components/auth/Login";
@@ -17,37 +11,7 @@ import Mapa from "./components/Map";
 import Settings from "./components/Settings";
 
 import Auth from "./components/auth/Auth";
-import { AuthContext } from "./components/auth/Auth";
-
-// const fakeAuth = {
-//   isAuthenticated: false,
-//   isSeller: false,
-//   authenticate(cb) {
-//     this.isAuthenticated = true;
-//     setTimeout(cb, 100); // fake async
-//   },
-//   signout(cb) {
-//     this.isAuthenticated = false;
-//     setTimeout(cb, 100); // fake async
-//   }
-// };
-
-const PrivateRoute = ({ component: Component }, ...rest) => {
-  const { isAuthenticated } = useContext(AuthContext);
-
-  return (
-    <Route
-      {...rest}
-      render={props =>
-        isAuthenticated === true ? (
-          <Component {...props} />
-        ) : (
-          <Redirect to="/login" />
-        )
-      }
-    />
-  );
-};
+import PrivateRoute from "./components/PrivateRoute";
 
 function App() {
   return (
