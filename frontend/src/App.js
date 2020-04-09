@@ -11,7 +11,7 @@ import Mapa from "./components/Map";
 import Settings from "./components/Settings";
 
 import Auth from "./components/auth/Auth";
-import PrivateRoute from "./components/PrivateRoute";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
@@ -25,7 +25,7 @@ function App() {
                 <Route exact path="/" component={Mapa} />
                 <Route path="/login" component={Login} />
                 <Route path="/signup" component={SignUp} />
-                <PrivateRoute path="/settings" component={Settings} />
+                <ProtectedRoute path="/settings" component={Settings} />
                 <Route path="/about" component={About} />
                 <Route path="*" component={() => "404 NOT FOUND"} />
               </Switch>

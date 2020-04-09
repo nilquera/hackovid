@@ -2,7 +2,6 @@ import React, { Component } from "react";
 
 class Login extends Component {
   render() {
-    console.log("hya");
     return (
       <form>
         <h3>Sign In</h3>
