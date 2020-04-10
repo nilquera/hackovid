@@ -55,7 +55,7 @@ const Auth = ({ children }) => {
       isAuthenticated,
       setContextLogin,
       signup,
-      logout
+      setContextLogout
     };
   }, [user, isAuthenticated]);
 
