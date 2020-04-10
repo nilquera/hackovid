@@ -6,15 +6,15 @@ import NavItem from "./NavItem";
 import LogoutButton from "./LogoutButton";
 
 const Nav = () => {
-  const { user, isAuthenticated } = useContext(AuthContext);
-  console.log(user);
+  const { contextUser, isAuthenticated } = useContext(AuthContext);
+  console.log(contextUser);
   return (
     <nav className="navbar navbar-expand-lg navbar-light fixed-top">
       <div className="container">
         <Link className="navbar-brand" to={"/login"}>
           <img src={logo} alt="logo" width="80vx" />
         </Link>
-        {isAuthenticated && <div>hola {user.username}</div>}
+        {isAuthenticated && <div>hola {contextUser.username}</div>}
 
         <div className="collapse navbar-collapse" id="navbarTogglerDemo02">
           <ul className="navbar-nav ml-auto">

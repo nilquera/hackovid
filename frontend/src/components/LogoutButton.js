@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 import { AuthContext } from "./auth/Auth";
 
 const LogoutButton = () => {
-  const { setContextLogout } = useContext(AuthContext);
+  const { contextLogout } = useContext(AuthContext);
   const handleLogout = () => {
-    setContextLogout();
+    contextLogout();
   };
   return (
     <li className="nav-item">

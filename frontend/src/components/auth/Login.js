@@ -8,7 +8,7 @@ const Login = props => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const { setContextLogin, isAuthenticated } = useContext(AuthContext);
+  const { contextLogin } = useContext(AuthContext);
 
   const validateForm = () => email.length > 0 && password.length > 0;
 
@@ -23,7 +23,7 @@ const Login = props => {
       })
       .then(response => {
         setLoading(false);
-        setContextLogin(response.data.user, response.data.token); //set context
+        contextLogin(response.data.user, response.data.token); //set context
         props.history.push("/");
       })
       .catch(e => {

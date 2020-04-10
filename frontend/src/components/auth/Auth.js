@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import {
   setUserSession,
   removeUserSession,
@@ -9,55 +9,56 @@ import {
 export const AuthContext = React.createContext();
 
 const Auth = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [user, setUser] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(getToken() !== null);
+  const [contextUser, setContextUser] = useState(getUser());
+  const [contextToken, setContextToken] = useState(getToken());
 
-  useEffect(() => {
-    const token = getToken();
-    if (!token) {
-      return;
-    }
-
-    setIsAuthenticated(true);
-    setUser(getUser());
-  }, []);
-
-  async function setContextLogin(user, token) {
+  async function contextLogin(user, token) {
     //context
-    setUser(user);
+    setContextUser(user);
+    setContextToken(token);
     setIsAuthenticated(true);
-    //sessionStorage
+    //localStorage
     setUserSession(token, user);
   }
 
-  async function signup(user, token) {
-    const userData = {
-      user: "Nou Usuari",
-      email: "noucorreu@gmail.com"
-    };
-
+  async function contextSignup(user, token) {
     //context
-    setUser(user);
+    setContextUser(user);
+    setContextToken(token);
     setIsAuthenticated(true);
-    //sessionStorage
+    //localStorage
     setUserSession(token, user);
   }
 
-  function setContextLogout() {
-    setUser(null);
+  function contextLogout() {
+    //context
+    setContextUser(null);
+    setContextToken(null);
     setIsAuthenticated(false);
+    //localStorage
     removeUserSession();
   }
 
-  const value = React.useMemo(() => {
-    return {
-      user,
-      isAuthenticated,
-      setContextLogin,
-      signup,
-      setContextLogout
-    };
-  }, [user, isAuthenticated]);
+  // const value = React.useMemo(() => {
+  //   return {
+  //     contextUser,
+  //     contextToken,
+  //     isAuthenticated,
+  //     contextLogin,
+  //     contextSignup,
+  //     contextLogout
+  //   };
+  // }, [contextUser, contextToken, isAuthenticated]);
+
+  const value = {
+    contextUser,
+    contextToken,
+    isAuthenticated,
+    contextLogin,
+    contextSignup,
+    contextLogout
+  };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
