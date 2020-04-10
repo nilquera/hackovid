@@ -1,4 +1,10 @@
 import React, { useEffect, useState, useMemo } from "react";
+import {
+  setUserSession,
+  removeUserSession,
+  getToken,
+  getUser
+} from "../../utils/Session";
 
 export const AuthContext = React.createContext();
 
@@ -7,36 +13,47 @@ const Auth = ({ children }) => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    setIsAuthenticated(false);
+    const token = getToken();
+    if (!token) {
+      return;
+    }
+
+    setIsAuthenticated(true);
+    setUser(getUser());
   }, []);
 
-  async function login(email) {
-    setUser(email);
+  async function setContextLogin(user, token) {
+    //context
+    setUser(user);
     setIsAuthenticated(true);
-
-    console.log("Auth:", user);
+    //sessionStorage
+    setUserSession(token, user);
   }
 
-  async function signup(email, password) {
+  async function signup(user, token) {
     const userData = {
       user: "Nou Usuari",
       email: "noucorreu@gmail.com"
     };
 
-    setUser(userData);
+    //context
+    setUser(user);
     setIsAuthenticated(true);
+    //sessionStorage
+    setUserSession(token, user);
   }
 
-  function logout() {
+  function setContextLogout() {
     setUser(null);
     setIsAuthenticated(false);
+    removeUserSession();
   }
 
   const value = React.useMemo(() => {
     return {
       user,
       isAuthenticated,
-      login,
+      setContextLogin,
       signup,
       logout
     };

@@ -3,13 +3,13 @@ import { AuthContext } from "./Auth";
 import { Redirect } from "react-router-dom";
 import axios from "axios";
 
-const Login = () => {
+const Login = props => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  const { login } = useContext(AuthContext);
-  // const [redirectToHome, setRedirectToHome] = useState(false);
+  const { setContextLogin } = useContext(AuthContext);
 
   const validateForm = () => email.length > 0 && password.length > 0;
 
@@ -23,19 +23,15 @@ const Login = () => {
         password: password
       })
       .then(response => {
-        console.log(response.data.token);
         setLoading(false);
-        login(email);
+        setContextLogin(response.data.user, response.data.token); //set context
+        props.history.push("/");
       })
       .catch(e => {
         setLoading(false);
-        console.log("Usuari i pass incorrectes");
+        setError("Couldn't Sign In");
       });
-
-    // setRedirectToHome(true);
   }
-
-  // if (redirectToHome) return <Redirect to={"/"} />;
 
   return (
     <form onSubmit={handleSubmit}>
@@ -63,6 +59,13 @@ const Login = () => {
           value={password}
         />
       </div>
+      {error && (
+        <>
+          <small style={{ color: "red" }}>{error}</small>
+          <br />
+        </>
+      )}
+      <br />
 
       <button
         type="submit"
