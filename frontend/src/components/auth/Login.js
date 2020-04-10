@@ -18,7 +18,7 @@ const Login = props => {
 
     axios
       .post("http://localhost:3001/api/login", {
-        username: "admin",
+        username: email,
         password: password
       })
       .then(response => {
@@ -32,38 +32,38 @@ const Login = props => {
       });
   }
 
+  // type="email"
   return (
     <form onSubmit={handleSubmit}>
       <h3>Sign In</h3>
 
       <div className="form-group">
-        <label>Email address</label>
         <input
           autoFocus
-          type="email"
           className="form-control"
-          placeholder="Enter email"
+          placeholder="Correu electrònic"
           onChange={e => setEmail(e.target.value)}
           value={email}
         />
       </div>
 
       <div className="form-group">
-        <label>Password</label>
         <input
           type="password"
           className="form-control"
-          placeholder="Enter password"
+          placeholder="Contrasenya"
           onChange={e => setPassword(e.target.value)}
           value={password}
         />
       </div>
+
       {error && (
         <>
           <small style={{ color: "red" }}>{error}</small>
           <br />
         </>
       )}
+
       <br />
 
       <button

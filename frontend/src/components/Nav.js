@@ -7,7 +7,6 @@ import LogoutButton from "./LogoutButton";
 
 const Nav = () => {
   const { contextUser, isAuthenticated } = useContext(AuthContext);
-  console.log(contextUser);
   return (
     <nav className="navbar navbar-expand-lg navbar-light fixed-top">
       <div className="container">

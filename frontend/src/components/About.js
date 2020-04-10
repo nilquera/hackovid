@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 
 function About() {
@@ -8,13 +8,13 @@ function About() {
       <p>
         <i>
           Durant el confinament per la pandèmia del COVID-19, molts venedors i
-          venedores dels nostres barris han vist com disminuien les ventes de
-          forma preocupant.
+          venedores dels nostres barris han vist com disminuien les seves ventes
+          de forma preocupant.
         </i>
       </p>
       <p>
         <b>Comencia</b> és una plataforma molt senzilla destinada a facilitar el
-        comerç a les botigues de barri.
+        comerç de les botigues de barri.
       </p>
       <p>
         El venedor crea un <b>anunci</b> per la seva botiga i afegeix una sèrie
