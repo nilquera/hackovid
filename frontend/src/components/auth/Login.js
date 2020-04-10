@@ -8,7 +8,7 @@ const Login = props => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const { setContextLogin } = useContext(AuthContext);
+  const { setContextLogin, isAuthenticated } = useContext(AuthContext);
 
   const validateForm = () => email.length > 0 && password.length > 0;
 

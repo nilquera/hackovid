@@ -11,7 +11,7 @@ import Mapa from "./components/Map";
 import Settings from "./components/Settings";
 
 import Auth from "./components/auth/Auth";
-import ProtectedRoute from "./components/ProtectedRoute";
+import { PrivateRoute, PublicRoute } from "./components/SpecialRoutes";
 
 function App() {
   return (
@@ -23,9 +23,9 @@ function App() {
               <Nav />
               <Switch>
                 <Route exact path="/" component={Mapa} />
-                <Route path="/login" component={Login} />
-                <Route path="/signup" component={SignUp} />
-                <ProtectedRoute path="/settings" component={Settings} />
+                <PublicRoute path="/login" component={Login} />
+                <PublicRoute path="/signup" component={SignUp} />
+                <PrivateRoute path="/settings" component={Settings} />
                 <Route path="/about" component={About} />
                 <Route path="*" component={() => "404 NOT FOUND"} />
               </Switch>
