@@ -108,8 +108,8 @@ def login(email: str, password: str):
         "result": "success",
         "description": "Login successful",
         "user": {
-            user_fetched['name'],
-            user_fetched['role']
+            "name": user_fetched['name'],
+            "role": user_fetched['role']
         },
         "token": "mocktoken"
     }
