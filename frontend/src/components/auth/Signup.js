@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react";
 import { AuthContext } from "./Auth";
 import axios from "axios";
+import { Container } from "react-bootstrap";
 
 const SignUp = props => {
   const [nom, setNom] = useState("");
@@ -42,97 +43,99 @@ const SignUp = props => {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h3>Crea un compte</h3>
-      <p>És ràpid i fàcil</p>
+    <Container fluid="sm">
+      <form onSubmit={handleSubmit}>
+        <h3>Crea un compte</h3>
+        <p>És ràpid i fàcil</p>
 
-      <label style={{ marginRight: "5%" }}>
-        <input
-          type="radio"
-          name="esVenedor"
-          checked={esVenedor}
-          onChange={e => setEsVenedor(true)}
-        ></input>
-        Venedor
-      </label>
-      <label>
-        <input
-          type="radio"
-          name="esVenedor"
-          checked={!esVenedor}
-          onChange={e => setEsVenedor(false)}
-        ></input>
-        Comprador
-      </label>
-      <div className="form-group">
-        <input
-          autoFocus
-          type="text"
-          className="form-control"
-          placeholder="Nom"
-          onChange={e => setNom(e.target.value)}
-          value={nom}
-        />
-      </div>
-
-      <div className="form-group">
-        <input
-          type="text"
-          className="form-control"
-          placeholder="Cognom"
-          onChange={e => setCognom(e.target.value)}
-          value={cognom}
-        />
-      </div>
-
-      <div className="form-group">
-        <input
-          type="email"
-          className="form-control"
-          placeholder="Correu electrònic"
-          onChange={e => setEmail(e.target.value)}
-          value={email}
-        />
-      </div>
-
-      <div className="form-group">
-        <input
-          type="password"
-          className="form-control"
-          placeholder="Contrasenya"
-          onChange={e => setPassword(e.target.value)}
-          value={password}
-        />
-      </div>
-      {esVenedor && (
+        <label style={{ marginRight: "5%" }}>
+          <input
+            type="radio"
+            name="esVenedor"
+            checked={esVenedor}
+            onChange={e => setEsVenedor(true)}
+          ></input>
+          Venedor
+        </label>
+        <label>
+          <input
+            type="radio"
+            name="esVenedor"
+            checked={!esVenedor}
+            onChange={e => setEsVenedor(false)}
+          ></input>
+          Comprador
+        </label>
         <div className="form-group">
           <input
-            type="tel"
+            autoFocus
+            type="text"
             className="form-control"
-            placeholder="Telèfon mòbil"
-            onChange={e => setTelefon(e.target.value)}
-            value={telefon}
+            placeholder="Nom"
+            onChange={e => setNom(e.target.value)}
+            value={nom}
           />
         </div>
-      )}
 
-      {error && (
-        <>
-          <small style={{ color: "red" }}>{error}</small>
-          <br />
-        </>
-      )}
+        <div className="form-group">
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Cognom"
+            onChange={e => setCognom(e.target.value)}
+            value={cognom}
+          />
+        </div>
 
-      <br />
+        <div className="form-group">
+          <input
+            type="email"
+            className="form-control"
+            placeholder="Correu electrònic"
+            onChange={e => setEmail(e.target.value)}
+            value={email}
+          />
+        </div>
 
-      <button
-        type="submit"
-        disabled={!validateForm() || loading}
-        className="btn btn-primary btn-block"
-      >
-        Inscriu-te
-      </button>
-    </form>
+        <div className="form-group">
+          <input
+            type="password"
+            className="form-control"
+            placeholder="Contrasenya"
+            onChange={e => setPassword(e.target.value)}
+            value={password}
+          />
+        </div>
+        {esVenedor && (
+          <div className="form-group">
+            <input
+              type="tel"
+              className="form-control"
+              placeholder="Telèfon mòbil"
+              onChange={e => setTelefon(e.target.value)}
+              value={telefon}
+            />
+          </div>
+        )}
+
+        {error && (
+          <>
+            <small style={{ color: "red" }}>{error}</small>
+            <br />
+          </>
+        )}
+
+        <br />
+
+        <button
+          type="submit"
+          disabled={!validateForm() || loading}
+          className="btn btn-primary btn-block"
+        >
+          Inscriu-te
+        </button>
+      </form>
+    </Container>
   );
 };
 // <p className="forgot-password text-right">

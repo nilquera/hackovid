@@ -1,19 +1,18 @@
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "./auth/Auth";
+import { Navbar, Nav } from "react-bootstrap";
 
-const LogoutButton = () => {
+const NavLagout = () => {
   const { contextLogout } = useContext(AuthContext);
   const handleLogout = () => {
     contextLogout();
   };
   return (
-    <li className="nav-item">
-      <Link className="nav-link" to={"/"} onClick={handleLogout}>
-        <div style={{ color: "red" }}>Logout</div>
-      </Link>
-    </li>
+    <Nav.Link style={{ color: "red" }} href="/" onClick={handleLogout}>
+      Logout
+    </Nav.Link>
   );
 };
 
-export default LogoutButton;
+export default NavLagout;

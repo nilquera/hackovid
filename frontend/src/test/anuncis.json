@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "title": "Fruiteria Nàpols",
+    "description": "Venta de fruites de tots colors: verdes, vermelles, granates, etc.",
+    "location": { "latitude": 41.397061, "longitude": 2.166456 },
+    "packs": ["pack1", "pack2", "pack3"]
+  },
+  {
+    "id": 2,
+    "title": "Fruiteria Nàpols",
+    "description": "Venta de fruites de tots colors: verdes, vermelles, granates, etc.",
+    "location": { "latitude": 41.402984, "longitude": 2.170235 },
+    "packs": ["pack1", "pack2", "pack3"]
+  },
+  {
+    "id": 3,
+    "title": "Fruiteria Nàpols",
+    "description": "Venta de fruites de tots colors: verdes, vermelles, granates, etc.",
+    "location": { "latitude": 41.397415, "longitude": 2.166803 },
+    "packs": ["pack1", "pack2", "pack3"]
+  }
+]

@@ -1,6 +1,7 @@
 import React, { useContext, useState } from "react";
 import { AuthContext } from "./Auth";
 import axios from "axios";
+import { Container } from "react-bootstrap";
 
 const Login = props => {
   const [email, setEmail] = useState("");
@@ -18,7 +19,7 @@ const Login = props => {
 
     axios
       .post("http://localhost:3001/api/login", {
-        username: email,
+        username: "admin",
         password: password
       })
       .then(response => {
@@ -34,46 +35,48 @@ const Login = props => {
 
   // type="email"
   return (
-    <form onSubmit={handleSubmit}>
-      <h3>Sign In</h3>
+    <Container fluid="sm">
+      <form onSubmit={handleSubmit}>
+        <h3>Sign In</h3>
 
-      <div className="form-group">
-        <input
-          autoFocus
-          className="form-control"
-          placeholder="Correu electrònic"
-          onChange={e => setEmail(e.target.value)}
-          value={email}
-        />
-      </div>
+        <div className="form-group">
+          <input
+            autoFocus
+            className="form-control"
+            placeholder="Correu electrònic"
+            onChange={e => setEmail(e.target.value)}
+            value={email}
+          />
+        </div>
 
-      <div className="form-group">
-        <input
-          type="password"
-          className="form-control"
-          placeholder="Contrasenya"
-          onChange={e => setPassword(e.target.value)}
-          value={password}
-        />
-      </div>
+        <div className="form-group">
+          <input
+            type="password"
+            className="form-control"
+            placeholder="Contrasenya"
+            onChange={e => setPassword(e.target.value)}
+            value={password}
+          />
+        </div>
 
-      {error && (
-        <>
-          <small style={{ color: "red" }}>{error}</small>
-          <br />
-        </>
-      )}
+        {error && (
+          <>
+            <small style={{ color: "red" }}>{error}</small>
+            <br />
+          </>
+        )}
 
-      <br />
+        <br />
 
-      <button
-        type="submit"
-        disabled={!validateForm() || loading}
-        className="btn btn-primary btn-block"
-      >
-        Submit
-      </button>
-    </form>
+        <button
+          type="submit"
+          disabled={!validateForm() || loading}
+          className="btn btn-primary btn-block"
+        >
+          Submit
+        </button>
+      </form>
+    </Container>
   );
 };
 
