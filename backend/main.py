@@ -90,6 +90,28 @@ def get_user_email(email: str):
         }
     return json.dumps(str(user_fetched))
 
+@app.post("/login") # Mock login: retorna 200 si l'email existeix a la bd
+def login(email: str, password: str):
+    print (email)
+    print (password)
+    filter_email = {"email": email}
+    user_fetched = client['hackovid']['user'].find_one(filter_email)
+    if not user_fetched:
+        return {
+            "result": "error",
+            "description": "No user with email '" + str(email) + "' found."
+        }
+    # print(user_fetched["name"])
+    # userJSON = json.dumps(str(user_fetched))
+    return {
+        "result": "success",
+        "description": "Login successful",
+        "user": {
+            user_fetched['name'],
+            user_fetched['role']
+        },
+        "token": "mocktoken"
+    }
 
 @app.post("/user/{name}/{email}/{phone_number}/{role}")
 def post_user(name: str, email: str, phone_number: int, role: str):
@@ -125,7 +147,8 @@ def post_user(name: str, email: str, phone_number: int, role: str):
             "result": "success",
             "description": "User properly added.",
             "user": {
-                "name": name
+                "name": name,
+                "role": role
             }
         }
     except Exception as e:
