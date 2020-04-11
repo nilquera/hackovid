@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import axios from "axios";
 import {
   Form,
@@ -8,14 +8,21 @@ import {
   Tab,
   ListGroup,
   Accordion,
-  Card
+  Card,
+  Alert
 } from "react-bootstrap";
+import Geocode from "react-geocode";
 import { AuthContext } from "./auth/Auth";
 import PackForm from "./PackForm";
 
 const AdForm = props => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [carrer, setCarrer] = useState("");
+  const [num, setNum] = useState("");
+  const [ciutat, setCiutat] = useState("");
+  const [lat, setLat] = useState("");
+  const [lng, setLng] = useState("");
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -23,17 +30,35 @@ const AdForm = props => {
 
   const { contextLogin } = useContext(AuthContext);
 
+  useEffect(() => {
+    Geocode.setApiKey("AIzaSyD7gwBypoFxjJW8OSDCKkvcymW00n1Bqw8");
+  }, []);
+
   async function handleSubmit(event) {
     event.preventDefault();
-    setLoading(true);
 
+    setLoading(true);
     if (event.currentTarget.checkValidity() === false) {
-      console.log("Submit not validated");
       event.stopPropagation();
+      setError("Error: algun dels camps és invàlid");
       return;
     }
-    setValidated(true);
+    Geocode.fromAddress(`${carrer} ${num}, ${ciutat}`).then(
+      response => {
+        const { lat, lng } = response.results[0].geometry.location;
+        setLat(lat);
+        setLng(lng);
+      },
+      error => {
+        console.error(error);
+        event.stopPropagation();
+        setError("Error: Adreça no detectada");
+        return;
+      }
+    );
 
+    setValidated(true);
+    setError(null);
     console.log("Submit validated");
     // axios
     //   .post("http://localhost:3001/api/login", {
@@ -90,6 +115,49 @@ const AdForm = props => {
           </Col>
         </Form.Group>
 
+        <Row>
+          <Col>
+            <Form.Label column="sm">Ciutat</Form.Label>
+            <Form.Group as={Col} controlId="formCiutat">
+              <Form.Control
+                required
+                onChange={e => setCiutat(e.target.value)}
+                value={ciutat}
+              />
+              <Form.Control.Feedback type="invalid">
+                Afegeix la ciutat on està la botiga
+              </Form.Control.Feedback>
+            </Form.Group>
+          </Col>
+          <Col>
+            <Form.Label column="sm">Carrer</Form.Label>
+            <Form.Group as={Col} controlId="formCarrer">
+              <Form.Control
+                required
+                onChange={e => setCarrer(e.target.value)}
+                value={carrer}
+              />
+              <Form.Control.Feedback type="invalid">
+                Afegeix el carrer on està la botiga
+              </Form.Control.Feedback>
+            </Form.Group>
+          </Col>
+          <Col>
+            <Form.Label column="sm">Número</Form.Label>
+            <Form.Group as={Col} controlId="formNum">
+              <Form.Control
+                required
+                onChange={e => setNum(e.target.value)}
+                value={num}
+                type="number"
+              />
+              <Form.Control.Feedback type="invalid">
+                Afegeix el número del carrer
+              </Form.Control.Feedback>
+            </Form.Group>
+          </Col>
+        </Row>
+
         <Col>
           <Button variant="primary" type="submit">
             Penjar Anunci
@@ -115,6 +183,15 @@ const AdForm = props => {
           </Card>
         </Accordion>
       </Col>
+
+      {error && (
+        <>
+          <br />
+          <Col>
+            <Alert variant={"danger"}>{error}</Alert>
+          </Col>
+        </>
+      )}
     </>
   );
 };

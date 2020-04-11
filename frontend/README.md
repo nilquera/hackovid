@@ -4,8 +4,10 @@
 
 ## TODO
 
-- Connect Login to API
-- Connect Register to API
+- <trike>Connect Login to API</strike>
+  - todo: recollir token
+- <strike>Connect Register to API</strike>
+  - todo: recollir token
 - Ad form: get location of shop
 - Map: get geolocation
 - <strike>Ad form</strike>
