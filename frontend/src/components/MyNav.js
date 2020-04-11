@@ -4,6 +4,7 @@ import logo from "../logo.svg";
 import { AuthContext } from "./auth/Auth";
 import NavItem from "./NavItem";
 import NavLogout from "./NavLogout";
+import AddAdButton from "./AddAdButton";
 
 import { Navbar, Nav } from "react-bootstrap";
 
@@ -16,8 +17,12 @@ const MyNav = () => {
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="mr-auto">
           <Nav.Link href="/">Mapa</Nav.Link>
-
           <Nav.Link href="/about">About</Nav.Link>
+        </Nav>
+        <Nav className="justify-content-center">
+          {isAuthenticated && (
+            <Navbar.Text>Benvingut, {contextUser.username}</Navbar.Text>
+          )}
         </Nav>
         <Nav className="ml-auto">
           {!isAuthenticated && (
@@ -28,7 +33,7 @@ const MyNav = () => {
           )}
           {isAuthenticated && (
             <>
-              <Navbar.Text>{contextUser.username} |</Navbar.Text>
+              <AddAdButton />
               <Nav.Link href="/settings">Configuració</Nav.Link>
               <NavLogout />
             </>
