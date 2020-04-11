@@ -5,7 +5,7 @@ import json
 
 app = FastAPI()
 
-password = "<MongoDB password>"
+password = "RWGMgNhfFrqOGFmw"
 
 client = MongoClient(
     'mongodb+srv://ignasi:' + password + '@cluster0-usg2t.mongodb.net/test?authSource=admin&replicaSet=Cluster0-shard-0&readPreference=primary&appname=MongoDB%20Compass&ssl=true')

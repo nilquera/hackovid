@@ -69,7 +69,7 @@ const AdForm = props => {
               Afegeix un títol
             </Form.Control.Feedback>
             <Form.Text className="text-muted">
-              We'll never share your email with anyone else.
+              Pots posar el nom de la teva botiga.
             </Form.Text>
           </Col>
         </Form.Group>
@@ -92,7 +92,7 @@ const AdForm = props => {
 
         <Col>
           <Button variant="primary" type="submit">
-            Guardar anunci
+            Penjar Anunci
           </Button>
         </Col>
       </Form>
@@ -104,7 +104,7 @@ const AdForm = props => {
           <Card>
             <Card.Header>
               <Accordion.Toggle as={Button} variant="link" eventKey="0">
-                Afegeix Pack
+                Afegir Pack
               </Accordion.Toggle>
             </Card.Header>
             <Accordion.Collapse eventKey="0">
