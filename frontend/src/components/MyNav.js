@@ -9,7 +9,6 @@ import { Navbar, Nav } from "react-bootstrap";
 
 const MyNav = () => {
   const { contextUser, isAuthenticated } = useContext(AuthContext);
-  console.log(contextUser);
   return (
     <Navbar bg="dark" variant="dark" expand="lg">
       <Navbar.Brand href="/">Comencia</Navbar.Brand>

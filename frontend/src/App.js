@@ -1,6 +1,5 @@
-import React from "react";
+import React, { useContext } from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import { Container, Row } from "react-bootstrap";
 
 import SignUp from "./components/auth/Signup";
 import Login from "./components/auth/Login";
@@ -8,12 +7,11 @@ import About from "./components/About";
 import MyNav from "./components/MyNav";
 import MyMap from "./components/MyMap";
 import Settings from "./components/Settings";
-import Auth from "./components/auth/Auth";
 import { PrivateRoute, PublicRoute } from "./components/SpecialRoutes";
 
 function App() {
   return (
-    <Auth>
+    <div className="mycontainer">
       <MyNav />
       <Router>
         <Switch>
@@ -25,7 +23,7 @@ function App() {
           <Route path="*" component={() => "404 NOT FOUND"} />
         </Switch>
       </Router>
-    </Auth>
+    </div>
   );
 }
 

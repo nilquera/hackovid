@@ -4,13 +4,14 @@ import { BrowserRouter } from "react-router-dom";
 import "./index.css";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
+import Auth from "./components/auth/Auth";
 
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
-      <div className="mycontainer">
+      <Auth>
         <App />
-      </div>
+      </Auth>
     </BrowserRouter>
   </React.StrictMode>,
   document.getElementById("root")
