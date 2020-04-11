@@ -1,9 +1,10 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Map, Marker, Popup, TileLayer } from "react-leaflet";
 import { Icon } from "leaflet";
 import data from "../test/anuncis.json";
 import "./css/MyMap.css";
 import { AuthContext } from "./auth/Auth";
+import Ad from "./Ad";
 
 const icon = new Icon({
   iconUrl: require("../images/marker2.svg"),
@@ -12,11 +13,21 @@ const icon = new Icon({
 
 const MyMap = () => {
   const [activeAd, setActiveAd] = useState(null);
+  // const [lat, setLat] = useState("");
+  // const [lng, setLng] = useState("");
   const { contextUser, isAuthenticated } = useContext(AuthContext);
 
+  // useEffect(() => {
+  //   navigator.geolocation.getCurrentPosition(position => {
+  //     setLat(position.coords.latitude);
+  //     setLng(position.coords.longitude);
+  //   });
+  // }, []);
+
+  const position = ["41.3851", "2.1734"];
   return (
     <>
-      <Map center={[41.397366, 2.166591]} zoom={20}>
+      <Map center={position} zoom={15}>
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
@@ -34,16 +45,13 @@ const MyMap = () => {
         ))}
         {activeAd && (
           <Popup
+            className="request-popup"
             position={[activeAd.location.latitude, activeAd.location.longitude]}
             onClose={() => {
               setActiveAd(null);
             }}
           >
-            <div>
-              <h2>{activeAd.title}</h2>
-              <h3>{activeAd.description}</h3>
-              <p>{activeAd.packs}</p>
-            </div>
+            <Ad ad={activeAd} />
           </Popup>
         )}
       </Map>

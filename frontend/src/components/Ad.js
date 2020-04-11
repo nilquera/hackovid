@@ -1,122 +1,105 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import axios from "axios";
-import {
-  Form,
-  Button,
-  Col,
-  Row,
-  Tab,
-  ListGroup,
-  Accordion,
-  Card
-} from "react-bootstrap";
+import { Card, Button, Tab, Row, Col, ListGroup, Alert } from "react-bootstrap";
 import { AuthContext } from "./auth/Auth";
-import PackForm from "./PackForm";
 
-const AdForm = props => {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
+//temp
+import data from "../test/anuncis.json";
 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [validated, setValidated] = useState(false);
-
-  const { contextLogin } = useContext(AuthContext);
-
-  async function handleSubmit(event) {
-    event.preventDefault();
-    setLoading(true);
-
-    if (event.currentTarget.checkValidity() === false) {
-      console.log("Submit not validated");
-      event.stopPropagation();
-      return;
+const AdForm = ({ ad }) => {
+  const isSeller = true;
+  const [activePack, setActivePack] = useState("");
+  const [showAlert, setShowAlert] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const handleBuy = () => {
+    if (!isSeller) {
+      setShowAlert(true);
+    } else {
+      setShowSuccess(true);
     }
-    setValidated(true);
-
-    console.log("Submit validated");
-    // axios
-    //   .post("http://localhost:3001/api/login", {
-    //     username: "admin",
-    //     password: password
-    //   })
-    //   .then(response => {
-    //     setLoading(false);
-    //     contextLogin(response.data.user, response.data.token); //set context
-    //     props.history.push("/");
-    //   })
-    //   .catch(e => {
-    //     setLoading(false);
-    //     setError("Couldn't Sign In");
-    //   });
-  }
+  };
 
   return (
     <>
-      <Form noValidate validated={validated} onSubmit={handleSubmit}>
-        <Form.Group controlId="formTitle">
-          <Form.Label column="lg">Títol</Form.Label>
-          <Col>
-            <Form.Control
-              size="lg"
-              required
-              onChange={e => setTitle(e.target.value)}
-              value={title}
-              type="text"
-              placeholder="Títol de l'anunci"
-            />
-            <Form.Control.Feedback type="invalid">
-              Afegeix un títol
-            </Form.Control.Feedback>
-            <Form.Text className="text-muted">
-              We'll never share your email with anyone else.
-            </Form.Text>
+      <h1>{ad.title}</h1>
+      <p>{ad.description}</p>
+      <Tab.Container id="list-group-tabs-example">
+        <Row>
+          <Col sm={6}>
+            <ListGroup>
+              {ad.packs.map(pack => {
+                return (
+                  <ListGroup.Item
+                    variant="info"
+                    key={pack.title}
+                    action
+                    href={`#${pack.title}`}
+                    onClick={() => {
+                      setActivePack(pack);
+                    }}
+                  >
+                    {pack.title}
+                  </ListGroup.Item>
+                );
+              })}
+            </ListGroup>
           </Col>
-        </Form.Group>
-
-        <Form.Group controlId="formDescription">
-          <Form.Label column="sm">Descripció</Form.Label>
-          <Col>
-            <Form.Control
-              required
-              onChange={e => setDescription(e.target.value)}
-              value={description}
-              as="textarea"
-              rows="3"
-            />
-            <Form.Control.Feedback type="invalid">
-              Afegeix una descripció
-            </Form.Control.Feedback>
+          <Col sm={6}>
+            <Tab.Content>
+              {ad.packs.map(pack => {
+                return (
+                  <Tab.Pane key={pack.title} eventKey={`#${pack.title}`}>
+                    {pack.description}
+                  </Tab.Pane>
+                );
+              })}
+            </Tab.Content>
           </Col>
-        </Form.Group>
+        </Row>
+      </Tab.Container>
+      <hr></hr>
+      <Button variant="primary" onClick={handleBuy}>
+        Comprar {activePack.title}
+      </Button>
 
-        <Col>
-          <Button variant="primary" type="submit">
-            Guardar anunci
-          </Button>
-        </Col>
-      </Form>
+      <br />
+      <br />
 
-      <hr />
-
-      <Col>
-        <Accordion>
-          <Card>
-            <Card.Header>
-              <Accordion.Toggle as={Button} variant="link" eventKey="0">
-                Afegeix Pack
-              </Accordion.Toggle>
-            </Card.Header>
-            <Accordion.Collapse eventKey="0">
-              <Card.Body>
-                <PackForm />
-              </Card.Body>
-            </Accordion.Collapse>
-          </Card>
-        </Accordion>
-      </Col>
+      {showAlert && (
+        <>
+          <Alert
+            variant="danger"
+            onClose={() => setShowAlert(false)}
+            dismissible
+          >
+            <Alert.Heading>Registra't per efectuar la compra</Alert.Heading>
+            <p>
+              El sistema de compra actual delega la responsabilitat de la
+              compra/venta als usuaris.{" "}
+              <b>Necessitem que et registris amb un correu</b> perquè el venedor
+              pugui contactar amb tu.
+            </p>
+          </Alert>
+        </>
+      )}
+      {showSuccess && (
+        <>
+          <Alert
+            variant="success"
+            onClose={() => setShowSuccess(false)}
+            dismissible
+          >
+            <Alert.Heading>Gràcies per ajudar la {ad.title}</Alert.Heading>
+            <p>
+              El teu contacte ha estat enviat al propietari de la botiga. En
+              breus rebràs noticies seves!
+            </p>
+          </Alert>
+        </>
+      )}
     </>
   );
 };
+// <Button variant="primary">Go somewhere</Button>
 
 export default AdForm;

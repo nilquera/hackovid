@@ -4,20 +4,53 @@
     "title": "Fruiteria Nàpols",
     "description": "Venta de fruites de tots colors: verdes, vermelles, granates, etc.",
     "location": { "latitude": 41.397061, "longitude": 2.166456 },
-    "packs": ["pack1", "pack2", "pack3"]
+    "packs": [
+      {
+        "title": "Pack de fruita",
+        "description": "pues eso, que mes vols que et digui joder",
+        "price": 5
+      },
+      {
+        "title": "Pack de verdures",
+        "description": "pues eso, que mes vols que et digui joder",
+        "price": 5
+      }
+    ]
   },
   {
     "id": 2,
-    "title": "Fruiteria Nàpols",
+    "title": "Fruiteria Sardenya",
     "description": "Venta de fruites de tots colors: verdes, vermelles, granates, etc.",
     "location": { "latitude": 41.402984, "longitude": 2.170235 },
-    "packs": ["pack1", "pack2", "pack3"]
+    "packs": [
+      {
+        "title": "Pack de fruita",
+        "description": "pues eso, que mes vols que et digui joder",
+        "price": 5
+      },
+      {
+        "title": "Pack de verdures",
+        "description": "pues eso, que mes vols que et digui joder",
+        "price": 5
+      }
+    ]
   },
   {
     "id": 3,
-    "title": "Fruiteria Nàpols",
+    "title": "Fruiteria SantQuinti",
     "description": "Venta de fruites de tots colors: verdes, vermelles, granates, etc.",
     "location": { "latitude": 41.397415, "longitude": 2.166803 },
-    "packs": ["pack1", "pack2", "pack3"]
+    "packs": [
+      {
+        "title": "Pack de fruita",
+        "description": "pues eso, que mes vols que et digui joder",
+        "price": 5
+      },
+      {
+        "title": "Pack de verdures",
+        "description": "pues eso, que mes vols que et digui joder",
+        "price": 5
+      }
+    ]
   }
 ]
