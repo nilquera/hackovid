@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from pymongo import MongoClient
 import json
@@ -97,10 +97,11 @@ def login(email: str, password: str):
     filter_email = {"email": email}
     user_fetched = client['hackovid']['user'].find_one(filter_email)
     if not user_fetched:
-        return {
-            "result": "error",
-            "description": "No user with email '" + str(email) + "' found."
-        }
+        raise HTTPException(status_code=400, detail="Email or password incorrect")
+        # return {
+        #     "result": "error",
+        #     "description": "No user with email '" + str(email) + "' found."
+        # }
     # print(user_fetched["name"])
     # userJSON = json.dumps(str(user_fetched))
     return {
