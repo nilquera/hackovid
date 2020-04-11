@@ -25,7 +25,7 @@ const SignUp = props => {
     event.preventDefault();
     setLoading(true);
 
-    let rol = esVenedor ? "buyer" : "seller";
+    let rol = esVenedor ? "seller" : "buyer";
 
     axios
       .post(
@@ -33,7 +33,7 @@ const SignUp = props => {
       )
       .then(response => {
         setLoading(false);
-        contextLogin(response.data.user, "temptoken"); //set context (TODO: response.data.token)
+        contextLogin(response.data.user, "tempToken"); //set context (TODO: response.data.token)
         props.history.push("/");
       })
       .catch(e => {

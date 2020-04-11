@@ -31,9 +31,13 @@ const MyNav = () => {
               <Nav.Link href="/signup">Registra't</Nav.Link>
             </>
           )}
-          {isAuthenticated && (
+          {isAuthenticated && contextUser.role === "seller" && (
             <>
               <AddAdButton />
+            </>
+          )}
+          {isAuthenticated && (
+            <>
               <Nav.Link href="/settings">Configuració</Nav.Link>
               <NavLogout />
             </>
