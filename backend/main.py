@@ -2,8 +2,21 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from pymongo import MongoClient
 import json
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+
+origins = [
+    "http://localhost:3000",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 password = "<MongoDB password>"
 
@@ -110,7 +123,10 @@ def post_user(name: str, email: str, phone_number: int, role: str):
         client['hackovid']['user'].insert_one(user_to_insert)
         return {
             "result": "success",
-            "description": "User properly added."
+            "description": "User properly added.",
+            "user": {
+                "name": name
+            }
         }
     except Exception as e:
         return {

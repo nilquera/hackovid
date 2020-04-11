@@ -25,15 +25,15 @@ const SignUp = props => {
     event.preventDefault();
     setLoading(true);
 
+    let rol = esVenedor ? "buyer" : "seller";
+
     axios
-      .post("http://localhost:3001/api/users", {
-        username: nom,
-        email: email,
-        password: password
-      })
+      .post(
+        `http://localhost:8000/user/${nom}%20${cognom}/${email}/${telefon}/${rol}`
+      )
       .then(response => {
         setLoading(false);
-        contextLogin(response.data.user, response.data.token); //set context
+        contextLogin(response.data.user, "temptoken"); //set context (TODO: response.data.token)
         props.history.push("/");
       })
       .catch(e => {

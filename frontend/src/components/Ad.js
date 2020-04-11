@@ -7,7 +7,7 @@ import { AuthContext } from "./auth/Auth";
 import data from "../test/anuncis.json";
 
 const AdForm = ({ ad }) => {
-  const isSeller = true;
+  const isSeller = false;
   const [activePack, setActivePack] = useState("");
   const [showAlert, setShowAlert] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);

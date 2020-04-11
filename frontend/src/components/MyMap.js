@@ -4,10 +4,7 @@ import { Icon } from "leaflet";
 import data from "../test/anuncis.json";
 import "./css/MyMap.css";
 import { AuthContext } from "./auth/Auth";
-<<<<<<< HEAD
 import Ad from "./Ad";
-=======
->>>>>>> e468ee1bb43bfe6d2663e94e94ec00da1e756748
 
 const icon = new Icon({
   iconUrl: require("../images/marker2.svg"),
@@ -16,7 +13,6 @@ const icon = new Icon({
 
 const MyMap = () => {
   const [activeAd, setActiveAd] = useState(null);
-<<<<<<< HEAD
   // const [lat, setLat] = useState("");
   // const [lng, setLng] = useState("");
   const { contextUser, isAuthenticated } = useContext(AuthContext);
@@ -32,13 +28,6 @@ const MyMap = () => {
   return (
     <>
       <Map center={position} zoom={15}>
-=======
-  const { contextUser, isAuthenticated } = useContext(AuthContext);
-
-  return (
-    <>
-      <Map center={[41.397366, 2.166591]} zoom={20}>
->>>>>>> e468ee1bb43bfe6d2663e94e94ec00da1e756748
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'

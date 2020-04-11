@@ -21,7 +21,7 @@ const MyNav = () => {
         </Nav>
         <Nav className="justify-content-center">
           {isAuthenticated && (
-            <Navbar.Text>Benvingut, {contextUser.username}</Navbar.Text>
+            <Navbar.Text>Benvingut, {contextUser.name}</Navbar.Text>
           )}
         </Nav>
         <Nav className="ml-auto">

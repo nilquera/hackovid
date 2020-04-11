@@ -19,7 +19,7 @@ const Login = props => {
 
     axios
       .post("http://localhost:3001/api/login", {
-        username: "admin",
+        email: email,
         password: password
       })
       .then(response => {
@@ -33,7 +33,6 @@ const Login = props => {
       });
   }
 
-  // type="email"
   return (
     <Container fluid="sm">
       <form onSubmit={handleSubmit}>
@@ -46,6 +45,7 @@ const Login = props => {
             placeholder="Correu electrònic"
             onChange={e => setEmail(e.target.value)}
             value={email}
+            type="email"
           />
         </div>
 
