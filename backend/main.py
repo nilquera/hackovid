@@ -89,7 +89,7 @@ def get_packs_seller(seller: str):
     return all_packs_list
 
 
-@app.post("/user/")
+@app.post("/user")
 def new_post_user(name: str, email: str, role: str, phone_number: int = 0):
     if role == "buyer":
         buyer_to_insert = {
@@ -119,7 +119,11 @@ def new_post_user(name: str, email: str, role: str, phone_number: int = 0):
         client['hackovid']['user'].insert_one(user_to_insert)
         return {
             "result": "success",
-            "description": "User properly added."
+            "description": "User properly added.",
+            "user": {
+                "name": name,
+                "role": role
+            }
         }
     except Exception as e:
         return {
