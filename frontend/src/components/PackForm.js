@@ -6,8 +6,11 @@ import {
   Row,
   InputGroup,
   ListGroup,
-  Tab
+  Tab,
+  Alert
 } from "react-bootstrap";
+import { AuthContext } from "./auth/Auth";
+import axios from "axios";
 
 const PackForm = props => {
   const [title, setTitle] = useState("");
@@ -15,28 +18,43 @@ const PackForm = props => {
   const [price, setPrice] = useState("");
   //const [product, setProducts] = useState([]);
   const [validated, setValidated] = useState(false);
+  const [error, setError] = useState(null);
+  const [sucess, setSuccess] = useState(null);
 
   const [packs, setPacks] = useState([]);
+
+  const { contextUser } = useContext(AuthContext);
 
   function handleSubmit(event) {
     event.preventDefault();
     if (event.target.checkValidity() === false) {
-      console.log("Submit not validated");
+      setError("Error: algun dels camps és invàlid");
+      setSuccess(null);
       event.stopPropagation();
       return;
     }
 
-    const newPack = {
-      title: title,
-      description: description,
-      price: price
-    };
-    // setLoading(true);
-    //
-    setValidated(true);
-    setPacks(packs.concat(newPack));
+    axios
+      .post(
+        `http://localhost:8000/pack?title=${title}&description=${description}&advertisement=${contextUser.email}&price=${price}`
+      )
+      .then(response => {
+        setError(null);
+        setSuccess("El pack s'ha afegit correctament");
+        setValidated(true);
 
-    console.log("Submit validated");
+        const newPack = {
+          title: title,
+          description: description,
+          price: price
+        };
+
+        setPacks(packs.concat(newPack));
+      })
+      .catch(e => {
+        setSuccess(null);
+        setError("Error: no s'ha pogut afegir el pack");
+      });
   }
 
   return (
@@ -106,7 +124,7 @@ const PackForm = props => {
         </Form.Group>
 
         <Button variant="primary" type="submit">
-          Guardar Pack
+          Afegir Pack
         </Button>
       </Form>
 
@@ -137,6 +155,22 @@ const PackForm = props => {
           </Col>
         </Row>
       </Tab.Container>
+      {error && (
+        <>
+          <br />
+          <Col>
+            <Alert variant={"danger"}>{error}</Alert>
+          </Col>
+        </>
+      )}
+      {sucess && (
+        <>
+          <br />
+          <Col>
+            <Alert variant={"success"}>{sucess}</Alert>
+          </Col>
+        </>
+      )}
     </>
   );
 };

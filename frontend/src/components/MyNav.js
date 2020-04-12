@@ -1,6 +1,5 @@
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
-import logo from "../logo.svg";
 import { AuthContext } from "./auth/Auth";
 import NavItem from "./NavItem";
 import NavLogout from "./NavLogout";
@@ -21,7 +20,7 @@ const MyNav = () => {
         </Nav>
         <Nav className="justify-content-center">
           {isAuthenticated && (
-            <Navbar.Text>Benvingut, {contextUser.name}</Navbar.Text>
+            <Navbar.Text>Benvingut/da, {contextUser.name}</Navbar.Text>
           )}
         </Nav>
         <Nav className="ml-auto">

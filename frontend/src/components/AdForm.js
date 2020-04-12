@@ -21,14 +21,12 @@ const AdForm = props => {
   const [carrer, setCarrer] = useState("");
   const [num, setNum] = useState("");
   const [ciutat, setCiutat] = useState("");
-  const [lat, setLat] = useState("");
-  const [lng, setLng] = useState("");
 
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [sucess, setSuccess] = useState(null);
   const [validated, setValidated] = useState(false);
 
-  const { contextLogin } = useContext(AuthContext);
+  const { contextUser } = useContext(AuthContext);
 
   useEffect(() => {
     Geocode.setApiKey("AIzaSyD7gwBypoFxjJW8OSDCKkvcymW00n1Bqw8");
@@ -37,43 +35,36 @@ const AdForm = props => {
   async function handleSubmit(event) {
     event.preventDefault();
 
-    setLoading(true);
     if (event.currentTarget.checkValidity() === false) {
       event.stopPropagation();
       setError("Error: algun dels camps és invàlid");
       return;
     }
+
     Geocode.fromAddress(`${carrer} ${num}, ${ciutat}`).then(
       response => {
         const { lat, lng } = response.results[0].geometry.location;
-        setLat(lat);
-        setLng(lng);
+        axios
+          .post(
+            `http://localhost:8000/advertisement?seller=${contextUser.email}&title=${title}&description=${description}&city=${ciutat}&street=${carrer}&number=${num}&lat=${lat}&long=${lng}`
+          )
+          .then(response => {
+            setError(null);
+            setSuccess(
+              "L'anunci s'ha penjat correctament. Siusplau, introdueix algun pack"
+            );
+          })
+          .catch(e => {
+            setSuccess(null);
+            setError("Error: no s'ha pogut penjar l'anunci");
+          });
       },
       error => {
-        console.error(error);
         event.stopPropagation();
         setError("Error: Adreça no detectada");
-        return;
+        setSuccess(null);
       }
     );
-
-    setValidated(true);
-    setError(null);
-    console.log("Submit validated");
-    // axios
-    //   .post("http://localhost:3001/api/login", {
-    //     username: "admin",
-    //     password: password
-    //   })
-    //   .then(response => {
-    //     setLoading(false);
-    //     contextLogin(response.data.user, response.data.token); //set context
-    //     props.history.push("/");
-    //   })
-    //   .catch(e => {
-    //     setLoading(false);
-    //     setError("Couldn't Sign In");
-    //   });
   }
 
   return (
@@ -189,6 +180,14 @@ const AdForm = props => {
           <br />
           <Col>
             <Alert variant={"danger"}>{error}</Alert>
+          </Col>
+        </>
+      )}
+      {sucess && (
+        <>
+          <br />
+          <Col>
+            <Alert variant={"success"}>{sucess}</Alert>
           </Col>
         </>
       )}

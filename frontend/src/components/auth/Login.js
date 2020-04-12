@@ -20,9 +20,8 @@ const Login = props => {
     axios
       .post(`http://localhost:8000/login?email=${email}&password=${password}`)
       .then(response => {
-        console.log(response);
         setLoading(false);
-        contextLogin(response.data.user, "tempToken"); //set context // response.data.token
+        contextLogin(response.data.user, response.data.token); //set context // response.data.token
         props.history.push("/");
       })
       .catch(e => {

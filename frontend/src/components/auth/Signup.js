@@ -8,7 +8,7 @@ const SignUp = props => {
   const [cognom, setCognom] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [telefon, setTelefon] = useState("");
+  const [telefon, setTelefon] = useState(0);
   const [esVenedor, setEsVenedor] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -29,16 +29,17 @@ const SignUp = props => {
 
     axios
       .post(
-        `http://localhost:8000/user/${nom}%20${cognom}/${email}/${telefon}/${rol}`
+        `http://localhost:8000/user?name=${nom}%20${cognom}&email=${email}&role=${rol}&phone_number=${telefon}`
       )
       .then(response => {
         setLoading(false);
-        contextLogin(response.data.user, "tempToken"); //set context (TODO: response.data.token)
+        contextLogin(response.data.user, response.data.token); //set context (TODO: response.data.token)
         props.history.push("/");
       })
       .catch(e => {
+        console.log(e);
         setLoading(false);
-        setError("Couldn't Register");
+        setError("No s'ha pogut efectuar el registre");
       });
   }
 

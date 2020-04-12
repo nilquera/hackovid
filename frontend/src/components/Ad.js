@@ -3,18 +3,17 @@ import axios from "axios";
 import { Card, Button, Tab, Row, Col, ListGroup, Alert } from "react-bootstrap";
 import { AuthContext } from "./auth/Auth";
 
-//temp
-import data from "../test/anuncis.json";
-
-const AdForm = ({ ad }) => {
-  const isSeller = false;
+const Ad = ({ ad }) => {
+  const { contextUser } = useContext(AuthContext);
   const [activePack, setActivePack] = useState("");
   const [showAlert, setShowAlert] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const handleBuy = () => {
-    if (!isSeller) {
+    if (contextUser === null || contextUser.role === "seller") {
       setShowAlert(true);
+      setShowSuccess(false);
     } else {
+      setShowAlert(false);
       setShowSuccess(true);
     }
   };
@@ -72,7 +71,9 @@ const AdForm = ({ ad }) => {
             onClose={() => setShowAlert(false)}
             dismissible
           >
-            <Alert.Heading>Registra't per efectuar la compra</Alert.Heading>
+            <Alert.Heading>
+              Registra't com a comprador per efectuar la compra
+            </Alert.Heading>
             <p>
               El sistema de compra actual delega la responsabilitat de la
               compra/venta als usuaris.{" "}
@@ -102,4 +103,4 @@ const AdForm = ({ ad }) => {
 };
 // <Button variant="primary">Go somewhere</Button>
 
-export default AdForm;
+export default Ad;

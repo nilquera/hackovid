@@ -1,11 +1,12 @@
 import React, { useState, useContext, useEffect } from "react";
 import { Map, Marker, Popup, TileLayer } from "react-leaflet";
 import { Icon } from "leaflet";
-import data from "../test/anuncis.json";
+// import data from "../test/anuncis.json";
 import "./css/MyMap.css";
 import { AuthContext } from "./auth/Auth";
 import Ad from "./Ad";
 import { Col, Modal, Button } from "react-bootstrap";
+import axios from "axios";
 
 import LocateControl from "./LocateControl";
 
@@ -20,6 +21,7 @@ const MyMap = () => {
   const [error, setError] = useState(null);
   const [showError, setShowError] = useState(false);
   const [showMap, setShowMap] = useState(true);
+  const [data, setData] = useState([]);
 
   const locateOptions = {
     keepCurrentZoomLevel: true,
@@ -33,6 +35,20 @@ const MyMap = () => {
       setShowMap(false);
     }
   };
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:8000/advertisements")
+      .then(response => {
+        setData(response.data);
+      })
+      .catch(e => {
+        setError(
+          "No s'ha pogut connectar amb la base de dades d'anuncis. Recarrega la pàgina per tornar-ho a internar."
+        );
+        setShowError(true);
+      });
+  }, []);
 
   return (
     <>
@@ -57,8 +73,8 @@ const MyMap = () => {
 
           {data.map(item => (
             <Marker
-              key={item.id}
-              position={[item.location.latitude, item.location.longitude]}
+              key={item.description}
+              position={[item.lat, item.long]}
               icon={icon}
               onClick={() => {
                 setActiveAd(item);
@@ -68,10 +84,7 @@ const MyMap = () => {
           {activeAd && (
             <Popup
               className="request-popup"
-              position={[
-                activeAd.location.latitude,
-                activeAd.location.longitude
-              ]}
+              position={[activeAd.lat, activeAd.long]}
               onClose={() => {
                 setActiveAd(null);
               }}
