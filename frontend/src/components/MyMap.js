@@ -5,6 +5,9 @@ import data from "../test/anuncis.json";
 import "./css/MyMap.css";
 import { AuthContext } from "./auth/Auth";
 import Ad from "./Ad";
+import { Col, Modal, Button } from "react-bootstrap";
+
+import LocateControl from "./LocateControl";
 
 const icon = new Icon({
   iconUrl: require("../images/marker2.svg"),
@@ -13,48 +16,71 @@ const icon = new Icon({
 
 const MyMap = () => {
   const [activeAd, setActiveAd] = useState(null);
-  // const [lat, setLat] = useState("");
-  // const [lng, setLng] = useState("");
   const { contextUser, isAuthenticated } = useContext(AuthContext);
+  const [error, setError] = useState(null);
+  const [showError, setShowError] = useState(false);
+  const [showMap, setShowMap] = useState(true);
 
-  // useEffect(() => {
-  //   navigator.geolocation.getCurrentPosition(position => {
-  //     setLat(position.coords.latitude);
-  //     setLng(position.coords.longitude);
-  //   });
-  // }, []);
+  const locateOptions = {
+    keepCurrentZoomLevel: true,
+    enableHighAccuracy: true,
+    drawCircle: false,
+    onLocationError: () => {
+      setError(
+        "L'aplicació no ha pogut accedir a la geolocalització del dispositiu. Siusplau, permet la geolocalització per a una experiència personalitzada del nostre servei."
+      );
+      setShowError(true);
+      setShowMap(false);
+    }
+  };
 
-  const position = ["41.3851", "2.1734"];
   return (
     <>
-      <Map center={position} zoom={15}>
-        <TileLayer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-        />
+      {showError && (
+        <Modal show={showError} onHide={() => setShowError(false)}>
+          <Modal.Body>{error}</Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => setShowError(false)}>
+              Close
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      )}
 
-        {data.map(item => (
-          <Marker
-            key={item.id}
-            position={[item.location.latitude, item.location.longitude]}
-            icon={icon}
-            onClick={() => {
-              setActiveAd(item);
-            }}
+      {showMap && (
+        <Map zoom={20}>
+          <LocateControl options={locateOptions} startDirectly />
+          <TileLayer
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
           />
-        ))}
-        {activeAd && (
-          <Popup
-            className="request-popup"
-            position={[activeAd.location.latitude, activeAd.location.longitude]}
-            onClose={() => {
-              setActiveAd(null);
-            }}
-          >
-            <Ad ad={activeAd} />
-          </Popup>
-        )}
-      </Map>
+
+          {data.map(item => (
+            <Marker
+              key={item.id}
+              position={[item.location.latitude, item.location.longitude]}
+              icon={icon}
+              onClick={() => {
+                setActiveAd(item);
+              }}
+            />
+          ))}
+          {activeAd && (
+            <Popup
+              className="request-popup"
+              position={[
+                activeAd.location.latitude,
+                activeAd.location.longitude
+              ]}
+              onClose={() => {
+                setActiveAd(null);
+              }}
+            >
+              <Ad ad={activeAd} />
+            </Popup>
+          )}
+        </Map>
+      )}
     </>
   );
 };

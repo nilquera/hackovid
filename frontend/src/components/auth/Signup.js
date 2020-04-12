@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import { AuthContext } from "./Auth";
 import axios from "axios";
-import { Container } from "react-bootstrap";
+import { Container, Col, Alert } from "react-bootstrap";
 
 const SignUp = props => {
   const [nom, setNom] = useState("");
@@ -120,8 +120,10 @@ const SignUp = props => {
 
         {error && (
           <>
-            <small style={{ color: "red" }}>{error}</small>
             <br />
+            <Col>
+              <Alert variant={"danger"}>{error}</Alert>
+            </Col>
           </>
         )}
 
