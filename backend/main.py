@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 
 import jwt
-from jwt import PyJWTError
+#from jwt import PyJWTError
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from pydantic import BaseModel
@@ -17,11 +17,11 @@ origins = [
     "*"
 ]
 
-SECRET_KEY = "<secret key>"
+SECRET_KEY = ""
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
-password = "<password>"
+password = ""
 
 client = MongoClient(
     'mongodb+srv://ignasi:' + password + '@cluster0-usg2t.mongodb.net/test?authSource=admin&replicaSet=Cluster0-shard-0&readPreference=primary&appname=MongoDB%20Compass&ssl=true')
@@ -98,14 +98,21 @@ def get_password_hash(password):
 
 
 @app.get("/user")
-def get_user_email(email: str):
+def get_user_email(email: str, password: str):
     filter_email = {"email": email}
     user_fetched = client['hackovid']['user'].find_one(filter_email)
+
     if not user_fetched:
         return {
             "result": "error",
-            "description": "No user with email '" + str(email) + "' found."
+            "description": "User inexistent"
         }
+
+    if not verify_password(password, user_fetched["password"]):
+        raise HTTPException(status_code=400, detail="Correu o contrasenya incorrecte.")
+
+    # Crear-te el token
+    # return token WITHOUT SAVING IT
     return json.dumps(str(user_fetched))
 
 
@@ -129,7 +136,6 @@ def create_access_token(*, data: dict, expires_delta: timedelta = None):
     return encoded_jwt
 
 
-
 @app.get("/packs/{seller}")
 def get_packs_seller(seller: str):
     filter_email = {"advertisement": seller}
@@ -145,9 +151,6 @@ def get_packs_seller(seller: str):
         }
         all_packs_list.append(new_pack)
     return all_packs_list
-
-
-
 
 
 @app.post("/user")
