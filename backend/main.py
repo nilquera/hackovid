@@ -411,6 +411,16 @@ def get_transactions():
         all_transactions_list.append(new_transaction)
     return all_transactions_list
 
+def get_info_pack(id_pack: str):
+    filter_pack = {"id": id_pack}
+    pack_fetched = client['hackovid']['pack'].find_one(filter_pack)
+    if not pack_fetched:
+        raise HTTPException(status_code=400, detail="Pack not found")
+    return {
+        "title": pack_fetched["title"],
+        "description": pack_fetched["description"]
+    }
+
 
 @app.get("/transaction/seller")
 def get_all_transaction_seller(seller: str, access_token: str):
@@ -424,7 +434,7 @@ def get_all_transaction_seller(seller: str, access_token: str):
         new_ad = {
             "buyer": t["buyer"],
             "advertisement": t["advertisement"],
-            "packs": get_packs_seller(t["advertisement"])
+            "pack": get_info_pack(t['pack'])
         }
         all_transactions_list.append(new_ad)
     return all_transactions_list
@@ -442,7 +452,7 @@ def get_all_transaction_buyer(buyer: str, access_token: str):
         new_ad = {
             "buyer": t["buyer"],
             "advertisement": t["advertisement"],
-            "packs": get_packs_seller(t["advertisement"])
+            "packs": get_info_pack(t['pack'])
         }
         all_transactions_list.append(new_ad)
     return all_transactions_list
