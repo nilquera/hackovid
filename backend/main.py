@@ -21,7 +21,7 @@ SECRET_KEY = "<secret key>"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
-password = "mongodbpassword"
+password = "<password>"
 
 client = MongoClient(
     'mongodb+srv://ignasi:' + password + '@cluster0-usg2t.mongodb.net/test?authSource=admin&replicaSet=Cluster0-shard-0&readPreference=primary&appname=MongoDB%20Compass&ssl=true')
@@ -221,6 +221,7 @@ def new_post_user(name: str, email: str, role: str, password: str, phone_number:
             "result": "success",
             "description": "User properly added.",
             "user": {
+                "name": name,
                 "email": email,
                 "role": role
             },
@@ -281,6 +282,7 @@ def login(email: str, password: str):
         "result": "success",
         "description": "Login successful",
         "user": {
+            "name": user_fetched['name'],
             "email": user_fetched['email'],
             "role": user_fetched['role']
         },
@@ -427,6 +429,23 @@ def get_all_transaction_seller(seller: str, access_token: str):
         all_transactions_list.append(new_ad)
     return all_transactions_list
 
+
+@app.get("/transaction/buyer")
+def get_all_transaction_buyer(buyer: str, access_token: str):
+    if not validate_user(buyer, access_token):
+        raise HTTPException(status_code=400, detail="User could not be identified")
+
+    filter_buyer = {"buyer": buyer}
+    all_transactions_fetched = client['hackovid']['transaction'].find(filter_buyer)
+    all_transactions_list = []
+    for t in all_transactions_fetched:
+        new_ad = {
+            "buyer": t["buyer"],
+            "advertisement": t["advertisement"],
+            "packs": get_packs_seller(t["advertisement"])
+        }
+        all_transactions_list.append(new_ad)
+    return all_transactions_list
 
 
 
