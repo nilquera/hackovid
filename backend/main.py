@@ -89,8 +89,22 @@ def get_packs_seller(seller: str):
     return all_packs_list
 
 
+@app.get("/user/{email}")
+def get_user_email(email: str):
+    filter_email = {"email": email}
+    user_fetched = client['hackovid']['user'].find_one(filter_email)
+    if not user_fetched:
+        return {
+            "result": "error",
+            "description": "No user with email '" + str(email) + "' found."
+        }
+    return json.dumps(str(user_fetched))
+
+
 @app.post("/user")
 def new_post_user(name: str, email: str, role: str, phone_number: int = 0):
+    if email in str(get_user_email(email)):
+        raise HTTPException(status_code=400, detail="User " + email + " already registered")
     if role == "buyer":
         buyer_to_insert = {
             "id":  email,
@@ -236,12 +250,10 @@ def new_get_all_advertisements():
 
 
 @app.post("/transaction")
-def new_post_transaction(seller: str, buyer: str, advertisement: str, pack: str):
+def new_post_transaction(buyer: str, advertisement: str, pack: str):
     pack_to_insert = {
-        "id": "example",
-        "seller": seller,
         "buyer": buyer,
-        "advertisement": advertisement,
+        "advertisement": advertisement, #  email of the seller
         "pack": pack
     }
     try:
