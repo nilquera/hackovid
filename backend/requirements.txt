@@ -3,4 +3,4 @@ uvicorn
 pymongo[srv]
 pyjwt
 passlib[bcrypt]
-
+jwt
