@@ -7,7 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI()
 
 origins = [
-    "http://localhost:3000",
+    "http://localhost:3000"
 ]
 
 app.add_middleware(
@@ -169,7 +169,11 @@ def get_advertisements():
             "seller": ad["seller"],
             "title": ad["title"],
             "description": ad["description"],
-            "location": ad["location"],
+            "city": ad["city"],
+            "street": ad["street"],
+            "number": ad["number"],
+            "lat": ad["lat"],
+            "long": ad["long"],
             "packs": ad["packs"]
         }
         all_advertisements_list.append(new_ad)
