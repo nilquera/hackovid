@@ -1,10 +1,23 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from pymongo import MongoClient
 import json
 import os
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+
+origins = [
+    "*"
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 password = "<MongoDB password>"
 
@@ -115,6 +128,31 @@ def new_post_user(name: str, email: str, role: str, phone_number: int = 0):
         }
 
 
+@app.post("/login") # Mock login: retorna 200 si l'email existeix a la bd
+def login(email: str, password: str):
+    print (email)
+    print (password)
+    filter_email = {"email": email}
+    user_fetched = client['hackovid']['user'].find_one(filter_email)
+    if not user_fetched:
+        raise HTTPException(status_code=400, detail="Email or password incorrect")
+        # return {
+        #     "result": "error",
+        #     "description": "No user with email '" + str(email) + "' found."
+        # }
+    # print(user_fetched["name"])
+    # userJSON = json.dumps(str(user_fetched))
+    return {
+        "result": "success",
+        "description": "Login successful",
+        "user": {
+            "name": user_fetched['name'],
+            "role": user_fetched['role']
+        },
+        "token": "mocktoken"
+    }
+
+
 @app.post("/advertisement")
 def new_post_advertisement(seller: str,
                        title: str,
@@ -213,4 +251,3 @@ def new_post_transaction(seller: str, buyer: str, advertisement: str, pack: str)
             "result": "error",
             "description": str(e)
         }
-
