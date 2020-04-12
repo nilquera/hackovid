@@ -1,3 +1,6 @@
 fastapi
 uvicorn
 pymongo[srv]
+pyjwt
+passlib[bcrypt]
+

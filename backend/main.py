@@ -1,25 +1,27 @@
-from fastapi import FastAPI, HTTPException
+from datetime import datetime, timedelta
+
+import jwt
+from jwt import PyJWTError
+from fastapi import Depends, FastAPI, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from pydantic import BaseModel
 from pymongo import MongoClient
 import json
-import os
 from fastapi.middleware.cors import CORSMiddleware
 
-app = FastAPI()
+
+from passlib.context import CryptContext
+from pydantic import BaseModel
 
 origins = [
     "*"
 ]
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+SECRET_KEY = "<secret key>"
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
-password = "<MongoDB password>"
+password = "<password>"
 
 client = MongoClient(
     'mongodb+srv://ignasi:' + password + '@cluster0-usg2t.mongodb.net/test?authSource=admin&replicaSet=Cluster0-shard-0&readPreference=primary&appname=MongoDB%20Compass&ssl=true')
@@ -72,6 +74,62 @@ class Transaction(BaseModel):
     pack: str
 
 
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/token")
+
+app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
+def verify_password(plain_password, hashed_password):
+    return pwd_context.verify(plain_password, hashed_password)
+
+
+def get_password_hash(password):
+    return pwd_context.hash(password)
+
+
+@app.get("/user")
+def get_user_email(email: str):
+    filter_email = {"email": email}
+    user_fetched = client['hackovid']['user'].find_one(filter_email)
+    if not user_fetched:
+        return {
+            "result": "error",
+            "description": "No user with email '" + str(email) + "' found."
+        }
+    return json.dumps(str(user_fetched))
+
+
+def authenticate_user(email: str, password: str):
+    user = get_user_email(email)
+    if not user:
+        return False
+    if not verify_password(password, user["password"]): # "password" is expected to be a hashed password
+        return False
+    return user
+
+
+def create_access_token(*, data: dict, expires_delta: timedelta = None):
+    to_encode = data.copy()
+    if expires_delta:
+        expire = datetime.utcnow() + expires_delta
+    else:
+        expire = datetime.utcnow() + timedelta(minutes=15)
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    return encoded_jwt
+
+
+
 @app.get("/packs/{seller}")
 def get_packs_seller(seller: str):
     filter_email = {"advertisement": seller}
@@ -89,20 +147,11 @@ def get_packs_seller(seller: str):
     return all_packs_list
 
 
-@app.get("/user/{email}")
-def get_user_email(email: str):
-    filter_email = {"email": email}
-    user_fetched = client['hackovid']['user'].find_one(filter_email)
-    if not user_fetched:
-        return {
-            "result": "error",
-            "description": "No user with email '" + str(email) + "' found."
-        }
-    return json.dumps(str(user_fetched))
+
 
 
 @app.post("/user")
-def new_post_user(name: str, email: str, role: str, phone_number: int = 0):
+def new_post_user(name: str, email: str, role: str, password: str, phone_number: int = 0):
     if email in str(get_user_email(email)):
         raise HTTPException(status_code=400, detail="User " + email + " already registered")
     if role == "buyer":
@@ -126,6 +175,7 @@ def new_post_user(name: str, email: str, role: str, phone_number: int = 0):
     user_to_insert = {
         "name": name,
         "email": email,
+        "password": get_password_hash(password),
         "phone_number": phone_number,
         "role": role
     }
@@ -267,3 +317,17 @@ def new_post_transaction(buyer: str, advertisement: str, pack: str):
             "result": "error",
             "description": str(e)
         }
+
+
+@app.get("/transaction")
+def get_transactions():
+    # By default, if find() is left empty its filter = {}
+    all_transactions_fetched = client['hackovid']['transaction'].find()
+    all_transactions_list = []
+    for t in all_transactions_fetched:
+        new_transaction = {
+            "buyer": t["buyer"],
+            "advertisement": t["advertisement"],
+            "pack": t["pack"]}
+        all_transactions_list.append(new_transaction)
+    return all_transactions_list
