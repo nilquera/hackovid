@@ -1,22 +1,10 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 from pydantic import BaseModel
 from pymongo import MongoClient
 import json
-from fastapi.middleware.cors import CORSMiddleware
+import os
 
 app = FastAPI()
-
-origins = [
-    "http://localhost:3000"
-]
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
 password = "<MongoDB password>"
 
@@ -25,7 +13,7 @@ client = MongoClient(
 
 
 class User(BaseModel):
-    email: str # Used as ID
+    email: str  # Used as ID
     name: str
     password: str
     phone_number: int
@@ -40,15 +28,19 @@ class Buyer:
 
 class Seller(BaseModel):
     id: str  # References user["email"]
-    advertisement: list
+    advertisement: list  # NO CAL
 
 
 class Advertisement(BaseModel):
     seller: str  # Used as ID
     title: str
     description: str
-    location: str
-    packs: list
+    city: str
+    street: str
+    number: int
+    lat: float
+    long: float
+    packs: list  # NO CAL
 
 
 class Pack(BaseModel):
@@ -57,6 +49,14 @@ class Pack(BaseModel):
     description: str
     advertisement: str  # References advertisement["seller"]
     price: float
+
+
+class Transaction(BaseModel):
+    id: str  # This ID is our own -> random str
+    seller: str
+    buyer: str
+    advertisement: str
+    pack: str
 
 
 @app.get("/")
@@ -90,29 +90,6 @@ def get_user_email(email: str):
         }
     return json.dumps(str(user_fetched))
 
-@app.post("/login") # Mock login: retorna 200 si l'email existeix a la bd
-def login(email: str, password: str):
-    print (email)
-    print (password)
-    filter_email = {"email": email}
-    user_fetched = client['hackovid']['user'].find_one(filter_email)
-    if not user_fetched:
-        raise HTTPException(status_code=400, detail="Email or password incorrect")
-        # return {
-        #     "result": "error",
-        #     "description": "No user with email '" + str(email) + "' found."
-        # }
-    # print(user_fetched["name"])
-    # userJSON = json.dumps(str(user_fetched))
-    return {
-        "result": "success",
-        "description": "Login successful",
-        "user": {
-            "name": user_fetched['name'],
-            "role": user_fetched['role']
-        },
-        "token": "mocktoken"
-    }
 
 @app.post("/user/{name}/{email}/{phone_number}/{role}")
 def post_user(name: str, email: str, phone_number: int, role: str):
@@ -146,11 +123,7 @@ def post_user(name: str, email: str, phone_number: int, role: str):
         client['hackovid']['user'].insert_one(user_to_insert)
         return {
             "result": "success",
-            "description": "User properly added.",
-            "user": {
-                "name": name,
-                "role": role
-            }
+            "description": "User properly added."
         }
     except Exception as e:
         return {
@@ -159,7 +132,7 @@ def post_user(name: str, email: str, phone_number: int, role: str):
         }
 
 
-@app.get("/advertisements")
+@app.get("/advertisements_old")
 def get_advertisements():
     # By default, if find() is left empty its filter = {}
     all_advertisements_fetched = client['hackovid']['advertisement'].find()
@@ -169,11 +142,7 @@ def get_advertisements():
             "seller": ad["seller"],
             "title": ad["title"],
             "description": ad["description"],
-            "city": ad["city"],
-            "street": ad["street"],
-            "number": ad["number"],
-            "lat": ad["lat"],
-            "long": ad["long"],
+            "location": ad["location"],
             "packs": ad["packs"]
         }
         all_advertisements_list.append(new_ad)
@@ -192,13 +161,26 @@ def get_advertisement_seller(seller: str):
     return json.dumps(str(advertisement_fetched))
 
 
-@app.post("/advertisement/{seller}/{title}/{description}/{location}/{packs}")
-def post_advertisement(seller: str, title: str, description: str, location: str, packs: str):
+@app.post("/advertisement/{seller}/{title}/{description}/{location}")
+def post_advertisement(seller: str,
+                       title: str,
+                       description: str,
+                       city: str,
+                       street: str,
+                       number: int,
+                       lat: float,
+                       long: float,
+                       packs: str = "[]"):
+
     advertisement_to_insert = {
         "seller": seller,
         "title": title,
         "description": description,
-        "location": location,
+        "city": city,
+        "street": street,
+        "number": number,
+        "lat": lat,
+        "long": long,
         "packs": packs
     }
     try:
@@ -212,6 +194,23 @@ def post_advertisement(seller: str, title: str, description: str, location: str,
             "result": "error",
             "description": str(e)
         }
+
+
+@app.put("/advertisement/{seller}")
+def put_advertisement_seller(seller: str, packs: str):
+    filter_email = {"seller": seller}
+    advertisement_fetched = client['hackovid']['advertisement'].find_one(filter_email)
+    advertisement_fetched["packs"] = packs
+    _filter = {"seller": seller}
+    _update = {"$set": {"packs": packs}}
+    res = client['hackovid']['advertisement'].update_one(_filter, _update)
+    print(str(res))
+    if not advertisement_fetched:
+        return {
+            "result": "error",
+            "description": "No advertisement with seller '" + str(seller) + "' found."
+        }
+    return json.dumps(str(client['hackovid']['advertisement'].find_one(filter_email)))
 
 
 @app.get("/packs")
@@ -232,15 +231,15 @@ def get_packs():
 
 
 @app.get("/packs/{seller}")
-def get_advertisement_seller(seller: str):
-    filter_email = {"seller": seller}
+def get_packs_seller(seller: str):
+    filter_email = {"advertisement": seller}
     all_packs_fetched = client['hackovid']['pack'].find(filter_email)
     all_packs_list = []
     for p in all_packs_fetched:
         new_pack = {
             "id": p["id"],
             "title": p["title"],
-            "description": p["phone_number"],
+            "description": p["description"],
             "advertisement": p["advertisement"],
             "price": p["price"]
         }
@@ -268,3 +267,161 @@ def post_pack(title: str, description: str, advertisement: str, price: float):
             "result": "error",
             "description": str(e)
         }
+
+
+@app.get("/advertisements_with_packs")
+def get_advertisements_with_packs():
+    # By default, if find() is left empty its filter = {}
+    all_advertisements_fetched = client['hackovid']['advertisement'].find()
+    all_advertisements_list = []
+    for ad in all_advertisements_fetched:
+        new_ad = {
+            "seller": ad["seller"],
+            "title": ad["title"],
+            "description": ad["description"],
+            "location": ad["location"],
+            "packs": ad["packs"]
+        }
+        all_advertisements_list.append(new_ad)
+    return all_advertisements_list
+
+
+# NEW Routes:
+@app.post("/user/")
+def new_post_user(name: str, email: str, role: str, phone_number: int = 0):
+    if role == "buyer":
+        buyer_to_insert = {
+            "id":  email,
+            "salary": 1000.0,
+            "purchases": "[]"
+        }
+        client['hackovid']['buyer'].insert_one(buyer_to_insert)
+    elif role == "seller":
+        seller_to_insert = {
+            "id": email,
+            "advertisement": "[]"
+        }
+        client['hackovid']['seller'].insert_one(seller_to_insert)
+    else:
+        return {
+            "result": "error",
+            "description": "User can only have role 'seller' or 'buyer'"
+        }
+    user_to_insert = {
+        "name": name,
+        "email": email,
+        "phone_number": phone_number,
+        "role": role
+    }
+    try:
+        client['hackovid']['user'].insert_one(user_to_insert)
+        return {
+            "result": "success",
+            "description": "User properly added."
+        }
+    except Exception as e:
+        return {
+            "result": "error",
+            "description": str(e)
+        }
+
+
+@app.post("/advertisement")
+def new_post_advertisement(seller: str,
+                       title: str,
+                       description: str,
+                       city: str,
+                       street: str,
+                       number: int,
+                       lat: float,
+                       long: float):
+
+    advertisement_to_insert = {
+        "seller": seller,
+        "title": title,
+        "description": description,
+        "city": city,
+        "street": street,
+        "number": number,
+        "lat": lat,
+        "long": long,
+        "packs": "[]"
+    }
+    try:
+        client['hackovid']['advertisement'].insert_one(advertisement_to_insert)
+        return {
+            "result": "success",
+            "description": "Advertisement properly added."
+        }
+    except Exception as e:
+        return {
+            "result": "error",
+            "description": str(e)
+        }
+
+
+@app.post("/pack")
+def new_post_pack(title: str, description: str, advertisement: str, price: float):
+    pack_to_insert = {
+        "id": advertisement + title,
+        "title": title,
+        "description": description,
+        "advertisement": advertisement,
+        "price": price
+    }
+    try:
+        client['hackovid']['pack'].insert_one(pack_to_insert)
+        return {
+            "result": "success",
+            "description": "Advertisement properly added."
+        }
+    except Exception as e:
+        return {
+            "result": "error",
+            "description": str(e)
+        }
+
+
+@app.get("/advertisements")
+def new_get_all_advertisements():
+    # By default, if find() is left empty its filter = {}
+    all_advertisements_fetched = client['hackovid']['advertisement'].find()
+    all_advertisements_list = []
+    for ad in all_advertisements_fetched:
+
+        new_ad = {
+            "seller": ad["seller"],
+            "title": ad["title"],
+            "description": ad["description"],
+            "city": ad["city"],
+            "street": ad["street"],
+            "number": ad["number"],
+            "lat": ad["lat"],
+            "long": ad["long"],
+            "packs": get_packs_seller(ad["seller"])
+        }
+        all_advertisements_list.append(new_ad)
+    return all_advertisements_list
+
+
+@app.post("/transaction")
+def new_post_transaction(seller: str, buyer: str, advertisement: str, pack: str):
+    pack_to_insert = {
+        "id": "example",
+        "seller": seller,
+        "buyer": buyer,
+        "advertisement": advertisement,
+        "pack": pack
+    }
+    try:
+        client['hackovid']['transaction'].insert_one(pack_to_insert)
+        return {
+            "result": "success",
+            "description": "Transaction properly added."
+        }
+    except Exception as e:
+        return {
+            "result": "error",
+            "description": str(e)
+        }
+
