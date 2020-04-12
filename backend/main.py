@@ -17,11 +17,11 @@ origins = [
     "*"
 ]
 
-SECRET_KEY = "<secret key>"
+SECRET_KEY = "secret key"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
-password = "<password>"
+password = "password"
 
 client = MongoClient(
     'mongodb+srv://ignasi:' + password + '@cluster0-usg2t.mongodb.net/test?authSource=admin&replicaSet=Cluster0-shard-0&readPreference=primary&appname=MongoDB%20Compass&ssl=true')
@@ -452,7 +452,7 @@ def get_all_transaction_buyer(buyer: str, access_token: str):
         new_ad = {
             "buyer": t["buyer"],
             "advertisement": t["advertisement"],
-            "packs": get_info_pack(t['pack'])
+            "pack": get_info_pack(t['pack'])
         }
         all_transactions_list.append(new_ad)
     return all_transactions_list
