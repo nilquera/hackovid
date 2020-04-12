@@ -1,5 +1,6 @@
 # Comencia
-##Hackovid
+
+## Hackovid
 
 Comencia és una webapp destinada a <b>facilitar la compravenda de lots de productes</b>. La plataforma està enfocada a la bona volutat del veïnat d'ajudar les botigues del seu barri.
 
@@ -53,7 +54,7 @@ Per la base de dades:
 ## Autors
 
 - [@nilquera](https://github.com/nilquera) - _Frontend_
-- [@ignasioliver](https.//github.com/ignasioliver) - _Backend_
+- [@ignasioliver](https://github.com/ignasioliver) - _Backend_
 
 ## Llicència
 
