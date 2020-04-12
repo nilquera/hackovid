@@ -8,13 +8,31 @@ const Ad = ({ ad }) => {
   const [activePack, setActivePack] = useState("");
   const [showAlert, setShowAlert] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [showError, setShowError] = useState(false);
+  const [error, setError] = useState(false);
+
   const handleBuy = () => {
+    console.log(ad);
     if (contextUser === null || contextUser.role === "seller") {
       setShowAlert(true);
       setShowSuccess(false);
+      setShowError(false);
     } else {
-      setShowAlert(false);
-      setShowSuccess(true);
+      axios
+        .post(
+          `http://localhost:8000/transaction?buyer=${contextUser.email}&advertisement=${ad.seller}&seller=${ad.seller}&pack=${ad.seller}${activePack.title}`
+        )
+        .then(response => {
+          setShowAlert(false);
+          setShowSuccess(true);
+          setShowError(false);
+        })
+        .catch(e => {
+          setShowAlert(false);
+          setShowSuccess(false);
+          setShowError(true);
+          setError("No s'ha pogut connectar amb el servidor");
+        });
     }
   };
 
@@ -57,9 +75,11 @@ const Ad = ({ ad }) => {
         </Row>
       </Tab.Container>
       <hr></hr>
-      <Button variant="primary" onClick={handleBuy}>
-        Comprar {activePack.title}
-      </Button>
+      {activePack && (
+        <Button variant="primary" onClick={handleBuy}>
+          Comprar {activePack.title}
+        </Button>
+      )}
 
       <br />
       <br />
@@ -95,6 +115,17 @@ const Ad = ({ ad }) => {
               El teu contacte ha estat enviat al propietari de la botiga. En
               breus rebràs noticies seves!
             </p>
+          </Alert>
+        </>
+      )}
+      {showError && (
+        <>
+          <Alert
+            variant="danger"
+            onClose={() => setShowError(false)}
+            dismissible
+          >
+            {error}
           </Alert>
         </>
       )}

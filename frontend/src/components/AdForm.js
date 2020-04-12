@@ -28,6 +28,8 @@ const AdForm = props => {
 
   const { contextUser } = useContext(AuthContext);
 
+  const [adCreated, setAdCreated] = useState(false);
+
   useEffect(() => {
     Geocode.setApiKey("AIzaSyD7gwBypoFxjJW8OSDCKkvcymW00n1Bqw8");
   }, []);
@@ -53,6 +55,7 @@ const AdForm = props => {
             setSuccess(
               "L'anunci s'ha penjat correctament. Siusplau, introdueix algun pack"
             );
+            setAdCreated(true);
           })
           .catch(e => {
             setSuccess(null);
@@ -158,22 +161,24 @@ const AdForm = props => {
 
       <hr />
 
-      <Col>
-        <Accordion>
-          <Card>
-            <Card.Header>
-              <Accordion.Toggle as={Button} variant="link" eventKey="0">
-                Afegir Pack
-              </Accordion.Toggle>
-            </Card.Header>
-            <Accordion.Collapse eventKey="0">
-              <Card.Body>
-                <PackForm />
-              </Card.Body>
-            </Accordion.Collapse>
-          </Card>
-        </Accordion>
-      </Col>
+      {adCreated && (
+        <Col>
+          <Accordion>
+            <Card>
+              <Card.Header>
+                <Accordion.Toggle as={Button} variant="link" eventKey="0">
+                  Afegir Pack
+                </Accordion.Toggle>
+              </Card.Header>
+              <Accordion.Collapse eventKey="0">
+                <Card.Body>
+                  <PackForm />
+                </Card.Body>
+              </Accordion.Collapse>
+            </Card>
+          </Accordion>
+        </Col>
+      )}
 
       {error && (
         <>
