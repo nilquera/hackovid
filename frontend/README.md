@@ -15,7 +15,7 @@
   - <strike>todo: connect to API</strike>
 - <strike>Pack form</strike>
   - <strike>todo: connect to API</strike>
-- Ad edition form
+- Add edition form
 - Add products to packs
 
 ### Setup
