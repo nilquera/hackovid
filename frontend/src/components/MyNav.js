@@ -33,11 +33,16 @@ const MyNav = () => {
           {isAuthenticated && contextUser.role === "seller" && (
             <>
               <AddAdButton />
+              <Nav.Link href="/ventes">Ventes</Nav.Link>
+            </>
+          )}
+          {isAuthenticated && contextUser.role === "buyer" && (
+            <>
+              <Nav.Link href="/compres">Compres</Nav.Link>
             </>
           )}
           {isAuthenticated && (
             <>
-              <Nav.Link href="/settings">Configuració</Nav.Link>
               <NavLogout />
             </>
           )}
@@ -47,4 +52,5 @@ const MyNav = () => {
   );
 };
 
+// <Nav.Link href="/settings">Configuració</Nav.Link>
 export default MyNav;

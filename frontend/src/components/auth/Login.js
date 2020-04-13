@@ -18,7 +18,9 @@ const Login = props => {
     setLoading(true);
 
     axios
-      .post(`http://localhost:8000/login?email=${email}&password=${password}`)
+      .post(
+        `https://comencia.herokuapp.com/login?email=${email}&password=${password}`
+      )
       .then(response => {
         setLoading(false);
         contextLogin(response.data.user, response.data.token); //set context // response.data.token

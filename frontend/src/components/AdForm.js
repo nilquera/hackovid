@@ -26,7 +26,7 @@ const AdForm = props => {
   const [sucess, setSuccess] = useState(null);
   const [validated, setValidated] = useState(false);
 
-  const { contextUser } = useContext(AuthContext);
+  const { contextUser, contextToken } = useContext(AuthContext);
 
   const [adCreated, setAdCreated] = useState(false);
 
@@ -48,7 +48,7 @@ const AdForm = props => {
         const { lat, lng } = response.results[0].geometry.location;
         axios
           .post(
-            `http://localhost:8000/advertisement?seller=${contextUser.email}&title=${title}&description=${description}&city=${ciutat}&street=${carrer}&number=${num}&lat=${lat}&long=${lng}`
+            `https://comencia.herokuapp.com/advertisement?seller=${contextUser.email}&title=${title}&description=${description}&city=${ciutat}&street=${carrer}&number=${num}&lat=${lat}&long=${lng}&access_token=${contextToken}`
           )
           .then(response => {
             setError(null);

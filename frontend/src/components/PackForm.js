@@ -23,9 +23,10 @@ const PackForm = props => {
 
   const [packs, setPacks] = useState([]);
 
-  const { contextUser } = useContext(AuthContext);
+  const { contextUser, contextToken } = useContext(AuthContext);
 
   function handleSubmit(event) {
+    console.log(contextToken);
     event.preventDefault();
     if (event.target.checkValidity() === false) {
       setError("Error: algun dels camps és invàlid");
@@ -36,7 +37,7 @@ const PackForm = props => {
 
     axios
       .post(
-        `http://localhost:8000/pack?title=${title}&description=${description}&advertisement=${contextUser.email}&price=${price}`
+        `https://comencia.herokuapp.com/pack?title=${title}&description=${description}&advertisement=${contextUser.email}&price=${price}&access_token=${contextToken}`
       )
       .then(response => {
         setError(null);

@@ -1,10 +1,10 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState } from "react";
 import axios from "axios";
-import { Card, Button, Tab, Row, Col, ListGroup, Alert } from "react-bootstrap";
+import { Button, Tab, Row, Col, ListGroup, Alert } from "react-bootstrap";
 import { AuthContext } from "./auth/Auth";
 
 const Ad = ({ ad }) => {
-  const { contextUser } = useContext(AuthContext);
+  const { contextUser, contextToken } = useContext(AuthContext);
   const [activePack, setActivePack] = useState("");
   const [showAlert, setShowAlert] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -12,7 +12,6 @@ const Ad = ({ ad }) => {
   const [error, setError] = useState(false);
 
   const handleBuy = () => {
-    console.log(ad);
     if (contextUser === null || contextUser.role === "seller") {
       setShowAlert(true);
       setShowSuccess(false);
@@ -20,7 +19,7 @@ const Ad = ({ ad }) => {
     } else {
       axios
         .post(
-          `http://localhost:8000/transaction?buyer=${contextUser.email}&advertisement=${ad.seller}&seller=${ad.seller}&pack=${ad.seller}${activePack.title}`
+          `https://comencia.herokuapp.com/transaction?buyer=${contextUser.email}&advertisement=${ad.seller}&seller=${ad.seller}&pack=${ad.seller}${activePack.title}&access_token=${contextToken}`
         )
         .then(response => {
           setShowAlert(false);

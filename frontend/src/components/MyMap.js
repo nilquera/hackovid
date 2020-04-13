@@ -38,8 +38,9 @@ const MyMap = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:8000/advertisements")
+      .get(`https://comencia.herokuapp.com/advertisements`)
       .then(response => {
+        console.log(data);
         setData(response.data);
       })
       .catch(e => {
@@ -99,8 +100,3 @@ const MyMap = () => {
 };
 
 export default MyMap;
-
-// 1: "Icon made by Pixel perfect from www.flaticon.com"
-// 2: "Icon made by Freepik perfect from www.flaticon.com"
-
-// https://stackoverflow.com/questions/47723812/custom-marker-icon-with-react-leaflet

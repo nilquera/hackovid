@@ -29,7 +29,7 @@ const SignUp = props => {
 
     axios
       .post(
-        `http://localhost:8000/user?name=${nom}%20${cognom}&email=${email}&role=${rol}&phone_number=${telefon}`
+        `https://comencia.herokuapp.com/user?password=${password}&name=${nom}%20${cognom}&email=${email}&role=${rol}&phone_number=${telefon}`
       )
       .then(response => {
         setLoading(false);
